@@ -7,18 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) createUser(c *gin.Context) {
-	var input models.KVRequest
+func (h *Handler) Register(c *gin.Context) {
+	var input models.User
 
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
-	if err := h.services.CreateUser(c.Request.Context(), input); err != nil {
+	id, err := h.services.CreateUser(input)
+	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, statusResponse{"ok"})
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/AntonZatsepilin/kv-storage.git/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,10 +17,9 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
-	router.POST("/kv", h.createUser)
-	// router.PUT("/kv/:id", h.updateUser)
-	// router.GET("/kv/:id", h.getUser)
-	// router.DELETE("/kv/:id", h.deleteUser)
+    router.POST("/register", Handler.Register)
+    // router.POST("/login", Handler.Login)
+    // router.POST("/refresh", Handler.RefreshTokens)
 
 	return router
 }
