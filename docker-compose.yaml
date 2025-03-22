@@ -3,9 +3,8 @@ version: '3.8'
 services:
   go-app:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
-    container_name: kv-storage-app
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -13,6 +12,12 @@ services:
     depends_on:
       tarantool:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   tarantool:
     image: tarantool/tarantool:latest
@@ -20,18 +25,11 @@ services:
     ports:
       - "3301:3301"
     volumes:
-      - ./tarantool/init.lua:/opt/tarantool/init.lua
-      - ./tarantool/healthcheck.lua:/opt/tarantool/healthcheck.lua
+      - ./tarantool:/opt/tarantool
+    working_dir: /opt/tarantool
+    command: sh -c "tarantoolctl rocks install http && tarantool init.lua"
     healthcheck:
-      test: ["CMD", "tarantool", "/opt/tarantool/healthcheck.lua"]
+      test: ["CMD", "nc", "-z", "localhost", "3301"]
       interval: 5s
-      timeout: 5s
-      retries: 5
-
-  tarantool-admin:
-    image: tarantool/tarantool:latest
-    ports:
-      - "8082:8081"
-    command: tarantool -e "require('http.server').new({host = '0.0.0.0', port = 8081}):start()"
-    depends_on:
-      - tarantool
+      timeout: 3s
+      retries: 3
