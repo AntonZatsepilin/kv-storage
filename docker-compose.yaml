@@ -21,11 +21,13 @@ services:
       - "3301:3301"
     volumes:
       - ./tarantool/init.lua:/opt/tarantool/init.lua
+      - ./tarantool/healthcheck.lua:/opt/tarantool/healthcheck.lua
     healthcheck:
       test: ["CMD", "tarantool", "/opt/tarantool/healthcheck.lua"]
       interval: 5s
       timeout: 5s
       retries: 5
+
   tarantool-admin:
     image: tarantool/tarantool:latest
     ports:
