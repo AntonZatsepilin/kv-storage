@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/AntonZatsepilin/kv-storage.git/internal/handler"
+	"github.com/AntonZatsepilin/kv-storage.git/internal/models"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -22,18 +24,6 @@ func main() {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
 
-	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBname:   viper.GetString("db.dbname"),
-		SSLmode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
-
-	if err != nil {
-		logrus.Fatalf("failed to initialize db: %s", err.Error())
-	}
 
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
@@ -46,20 +36,16 @@ func main() {
 		}
 	}()
 
-	logrus.Print("music-library-app Started")
+	logrus.Print("kv-storage-app Started")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
-	logrus.Print("music-library-app Shutting Down")
+	logrus.Print("kv-storage-app Shutting Down")
 
 	if err := srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
-	}
-
-	if err := db.Close(); err != nil {
-		logrus.Errorf("error occured on db connection close: %s", err.Error())
 	}
 }
 

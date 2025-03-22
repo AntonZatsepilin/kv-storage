@@ -5,14 +5,31 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: songs-store-app
+    container_name: kv-storage-app
     ports:
       - "8080:8080"
+    environment:
+      - TARANTOOL_HOST=tarantool
     depends_on:
-      db:
+      tarantool:
         condition: service_healthy
-    command: >
-      /bin/sh -c "
-      /usr/local/bin/migrate -path /app/schema -database postgres://postgres:postgres@db:5432/songs-store-db?sslmode=disable up &&
-      ./main
-      "
+
+  tarantool:
+    image: tarantool/tarantool:latest
+    container_name: tarantool
+    ports:
+      - "3301:3301"
+    volumes:
+      - ./tarantool/init.lua:/opt/tarantool/init.lua
+    healthcheck:
+      test: ["CMD", "tarantool", "/opt/tarantool/healthcheck.lua"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  tarantool-admin:
+    image: tarantool/tarantool:latest
+    ports:
+      - "8082:8081"
+    command: tarantool -e "require('http.server').new({host = '0.0.0.0', port = 8081}):start()"
+    depends_on:
+      - tarantool

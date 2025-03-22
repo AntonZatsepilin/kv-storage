@@ -1,1 +1,6 @@
 port: "8080"
+tarantool:
+  host: "tarantool"
+  port: 3301
+  user: "guest"
+  password: ""
