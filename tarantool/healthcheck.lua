@@ -1,9 +1,14 @@
-box = require('box')
-
-local conn = box.cfg.listen ~= nil
-if not conn then
-    os.exit(1)
+local function check_kv_space()
+    if not box.space.kv then
+        return false, "KV space not exists"
+    end
+    return true
 end
 
-local ok = pcall(box.space.kv.select, box.space.kv, 'primary', {''}, {limit=1})
-os.exit(ok and 0 or 1)
+local conn_ok, conn_err = pcall(box.cfg, {})
+local space_ok, space_err = check_kv_space()
+
+if not conn_ok or not space_ok then
+    os.exit(1)
+end
+os.exit(0)

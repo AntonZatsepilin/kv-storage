@@ -12,26 +12,24 @@ services:
     depends_on:
       tarantool:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
 
   tarantool:
     image: tarantool/tarantool:2.11.0
     container_name: tarantool
+    build:
+      context: ./tarantool
+      dockerfile: Dockerfile
     ports:
       - "3301:3301"
     mem_limit: 512m
     volumes:
       - ./tarantool:/opt/tarantool
+      - ./tarantool/data:/var/lib/tarantool
     working_dir: /opt/tarantool
     command: sh -c "apk update && apk add build-base && tarantoolctl rocks install http && tarantool init.lua"
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "3301"]
+      test: ["CMD", "tarantool", "/opt/tarantool/healthcheck.lua"]
       interval: 5s
-      timeout: 3s
-      retries: 3
-      start_period: 60s
+      timeout: 10s
+      retries: 10
+      start_period: 20s

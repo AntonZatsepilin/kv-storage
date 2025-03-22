@@ -8,25 +8,34 @@ box.cfg{
 }
 
 local function create_space_and_index()
-    local space_kv = box.schema.space.create('kv', {
-        if_not_exists = true,
-        format = {
-            {name = 'key', type = 'string'},
-            {name = 'value', type = '*'}
-        }
-    })
-    
-    space_kv:create_index('primary', {
-        type = 'hash',
-        parts = {'key'},
-        if_not_exists = true
-    })
+    if not box.space.kv then
+        box.schema.space.create('kv', {
+            if_not_exists = true,
+            format = {
+                {name = 'key', type = 'string'},
+                {name = 'value', type = '*'}
+            }
+        })
+        
+        box.space.kv:create_index('primary', {
+            type = 'hash',
+            parts = {'key'},
+            if_not_exists = true
+        })
+    end
 end
 
 local function grant_permissions()
-    box.schema.user.grant('guest', 'read,write,execute', 'space', 'kv')
-    box.schema.user.grant('guest', 'create,drop', 'space')
-    box.schema.user.grant('guest', 'read,write', 'universe')
+    local function safe_grant(user, privileges, object_type, object_name)
+        local ok, err = pcall(box.schema.user.grant, user, privileges, object_type, object_name)
+        if not ok and not tostring(err):find("already exists") then
+            error(err)
+        end
+    end
+
+    safe_grant('guest', 'read,write,execute', 'space', 'kv')
+    safe_grant('guest', 'create,drop', 'space')
+    safe_grant('guest', 'read,write', 'universe')
 end
 
 local function start_http_server()
