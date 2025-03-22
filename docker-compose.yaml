@@ -20,16 +20,18 @@ services:
       start_period: 5s
 
   tarantool:
-    image: tarantool/tarantool:latest
+    image: tarantool/tarantool:2.11.0
     container_name: tarantool
     ports:
       - "3301:3301"
+    mem_limit: 512m
     volumes:
       - ./tarantool:/opt/tarantool
     working_dir: /opt/tarantool
-    command: sh -c "tarantoolctl rocks install http && tarantool init.lua"
+    command: sh -c "apk update && apk add build-base && tarantoolctl rocks install http && tarantool init.lua"
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "3301"]
       interval: 5s
       timeout: 3s
       retries: 3
+      start_period: 60s
