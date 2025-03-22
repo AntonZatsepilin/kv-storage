@@ -16,10 +16,7 @@ func NewHandler(services *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
-
-    router.POST("/register", Handler.Register)
-    // router.POST("/login", Handler.Login)
-    // router.POST("/refresh", Handler.RefreshTokens)
+	
 
 	return router
 }

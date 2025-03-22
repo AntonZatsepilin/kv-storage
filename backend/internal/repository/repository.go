@@ -4,12 +4,11 @@ type  SongRepository interface {
 }
 
 type Repository struct {
-	UserRepository
 }
 
-func NewRepository() *Repository {
-	return &Repository{
-		UserRepository: NewUserTarantool(),
+// func NewRepository() *Repository {
+// 	return &Repository{
+// 		UserRepository: NewUserTarantool(),
 		
-	}
-}
+// 	}
+// }

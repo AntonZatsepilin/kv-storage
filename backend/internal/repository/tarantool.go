@@ -1,24 +1,35 @@
 package repository
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/sirupsen/logrus"
+	"github.com/tarantool/go-tarantool"
+)
 
-type Config struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	DBname   string
-	SSLmode  string
+type TarantoolConfig struct {
+    Host     string
+    Port     string
+    User     string
+    Password string
 }
 
-func NewTarantoolDB(cfg Config) () {
-	logrus.Info("Connecting to the database")
-	db, err := 
-
+func NewTarantoolDB(cfg TarantoolConfig) (*tarantool.Connection, error) {
+    logrus.Info("Connecting to Tarantool")
+    
+    conn, err := tarantool.Connect(cfg.Host+":"+cfg.Port, tarantool.Opts{
+        User: cfg.User,
+        Pass: cfg.Password,
+    })
+    
+    if err != nil {
+        return nil, err
+    }
+    
 	logrus.Info("Checking the connection to the database")
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+    _, err = conn.Ping()
+    if err != nil {
+        return nil, err
+    }
+    
+    logrus.Info("Successfully connected to Tarantool")
+    return conn, nil
 }

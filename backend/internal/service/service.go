@@ -7,8 +7,8 @@ type Service struct {
 	UserService
 }
 
-func NewService(repos *repository.Repository) *Service {
-	return &Service{
-		UserService: NewUserService(repos.SongRepository),
-	}
-}
+// func NewService(repos *repository.Repository) *Service {
+// 	return &Service{
+// 		UserService: NewUserService(repos.SongRepository),
+// 	}
+// }
