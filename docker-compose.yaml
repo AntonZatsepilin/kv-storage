@@ -8,12 +8,26 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - TARANTOOL_HOST=tarantool
+      TARANTOOL_HOST: tarantool
+    depends_on:
+      tarantool:
+        condition: service_healthy
+    networks:
+      - app-network
 
   tarantool:
-    image: tarantool/tarantool:2.10
-    container_name: tarantool
+    container_name: kv-storage-db
+    image: tarantool/tarantool:2.11.0
+    environment:
+      TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
+      TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
     ports:
-      - "3301:3301"
-    volumes:
-     - ./backend/init.lua:/opt/tarantool/init.lua
+      - 3301:3301
+    healthcheck:
+      test: ["CMD", "nc", "-z", "0.0.0.0", "3301"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+networks:
+  app-network:
+    driver: bridge
