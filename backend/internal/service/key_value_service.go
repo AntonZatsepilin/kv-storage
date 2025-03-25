@@ -17,3 +17,7 @@ func (s *KeyValueServiceImpl) SetValue(key, value string) error {
 func (s *KeyValueServiceImpl) GetValueByKey(key string) (string, error) {
 	return s.repo.GetValueByKey(key)
 }
+
+func (s *KeyValueServiceImpl) UpdateValue(key, value string) error {
+	return s.repo.SetValue(key, value)
+}

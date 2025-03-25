@@ -38,3 +38,9 @@ func (r *KeyValueTarantool) GetValueByKey(key string) (string, error) {
     }
     return value, nil
 }
+
+func (r *KeyValueTarantool) UpdateValue(key, value string) error {
+	_, err := r.db.Do(tarantool.NewUpdateRequest("kv").Key([]interface{}{key}).Operations(tarantool.NewOperations().Assign(1, value),),).Get()
+
+    return err
+}

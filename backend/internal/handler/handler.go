@@ -19,8 +19,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api")
 	{
-		api.POST("/set", h.setValue)
-		api.GET("/get/:key", h.getValueByKey)
+		api.POST("/kv", h.setValue)
+		api.GET("/kv/:key", h.getValueByKey)
+		api.PUT("/kv/:key", h.updateValue)
 	}
 	return router
 }

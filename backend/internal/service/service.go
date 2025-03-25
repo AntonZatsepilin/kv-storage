@@ -7,6 +7,7 @@ import (
 type KeyValueService interface {
 	SetValue(key, value string) error
 	GetValueByKey(key string) (string, error)
+	UpdateValue(key, value string) error
 }
 
 type Service struct {
