@@ -5,6 +5,8 @@ import (
 )
 
 type KeyValueService interface {
+	SetValue(key, value string) error
+	GetValueByKey(key string) (string, error)
 }
 
 type Service struct {

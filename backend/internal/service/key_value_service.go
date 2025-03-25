@@ -9,3 +9,11 @@ type KeyValueServiceImpl struct {
 func NewKeyValueService(repo repository.KeyValueRepository) *KeyValueServiceImpl {
 	return &KeyValueServiceImpl{repo: repo}
 }
+
+func (s *KeyValueServiceImpl) SetValue(key, value string) error {
+	return s.repo.SetValue(key, value)
+}
+
+func (s *KeyValueServiceImpl) GetValueByKey(key string) (string, error) {
+	return s.repo.GetValueByKey(key)
+}

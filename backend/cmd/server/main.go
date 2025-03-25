@@ -45,6 +45,8 @@ func main() {
 		logrus.Fatalf("failed to initialize Tarantool: %s", err.Error())
 	}
 
+	defer db.CloseGraceful()
+
 	repo := repository.NewRepository(db)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
