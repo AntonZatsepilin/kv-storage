@@ -1,21 +1,16 @@
-FROM golang:1.23.1-alpine AS builder
+FROM golang:1.23.1-alpine
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY backend/go.mod backend/go.sum ./
+
 RUN go mod download
 
-COPY . . 
+COPY . ./
 
-RUN apk add --no-cache openssl-dev gcc musl-dev
-RUN go build -tags openssl -o main ./cmd/server
+COPY ./backend .env
 
-FROM alpine:3.18
-
-WORKDIR /app
-
-COPY --from=builder /app/main .
-COPY configs/config.yaml ./configs/
+RUN go build -o main ./cmd/server
 
 EXPOSE 8080
 

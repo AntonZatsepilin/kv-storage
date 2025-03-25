@@ -1,6 +1,10 @@
 package repository
 
 import (
+	"fmt"
+	"net"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/tarantool/go-tarantool"
 )
@@ -12,24 +16,37 @@ type TarantoolConfig struct {
     Password string
 }
 
+// backend/internal/repository/tarantool.go
 func NewTarantoolDB(cfg TarantoolConfig) (*tarantool.Connection, error) {
-    logrus.Info("Connecting to Tarantool")
+    logrus.Info("Starting Tarantool connection...")
     
-    conn, err := tarantool.Connect(cfg.Host+":"+cfg.Port, tarantool.Opts{
-        User: cfg.User,
-        Pass: cfg.Password,
-    })
+    var conn *tarantool.Connection
+    var err error
+    maxAttempts := 15
+    delay := 5 * time.Second
     
-    if err != nil {
-        return nil, err
+    for i := 1; i <= maxAttempts; i++ {
+        conn, err = tarantool.Connect(
+            net.JoinHostPort(cfg.Host, cfg.Port),
+            tarantool.Opts{
+                User:          cfg.User,
+                Pass:          cfg.Password,
+                Timeout:       3 * time.Second,
+                Reconnect:    1 * time.Second,
+                MaxReconnects: 3,
+            },
+        )
+        
+        if err == nil {
+            if _, pingErr := conn.Ping(); pingErr == nil {
+                logrus.Info("Tarantool connection established")
+                return conn, nil
+            }
+        }
+        
+        logrus.Warnf("Connection attempt %d/%d failed: %v", i, maxAttempts, err)
+        time.Sleep(delay)
     }
     
-	logrus.Info("Checking the connection to the database")
-    _, err = conn.Ping()
-    if err != nil {
-        return nil, err
-    }
-    
-    logrus.Info("Successfully connected to Tarantool")
-    return conn, nil
+    return nil, fmt.Errorf("failed to connect after %d attempts: %w", maxAttempts, err)
 }

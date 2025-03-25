@@ -9,27 +9,11 @@ services:
       - "8080:8080"
     environment:
       - TARANTOOL_HOST=tarantool
-    depends_on:
-      tarantool:
-        condition: service_healthy
 
   tarantool:
-    image: tarantool/tarantool:2.11.0
+    image: tarantool/tarantool:2.10
     container_name: tarantool
-    build:
-      context: ./tarantool
-      dockerfile: Dockerfile
     ports:
       - "3301:3301"
-    mem_limit: 512m
     volumes:
-      - ./tarantool:/opt/tarantool
-      - ./tarantool/data:/var/lib/tarantool
-    working_dir: /opt/tarantool
-    command: sh -c "apk update && apk add build-base && tarantoolctl rocks install http && tarantool init.lua"
-    healthcheck:
-      test: ["CMD", "tarantool", "/opt/tarantool/healthcheck.lua"]
-      interval: 5s
-      timeout: 10s
-      retries: 10
-      start_period: 20s
+      - ./init.lua:/opt/tarantool/init.lua
