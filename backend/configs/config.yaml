@@ -1,6 +1,5 @@
 port: "8080"
 tarantool:
-  host: "tarantool"
+  adress: "tarantool:3301"
   port: "3301"
-  user: "admin"
-  password: "secret"
+  timeout: 5

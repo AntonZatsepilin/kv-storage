@@ -9,30 +9,9 @@ box.space.kv:format({
     {name = 'value', type = '*'}
 })
 box.space.kv:create_index('primary', {parts = {'key'}, if_not_exists = true})
-box.schema.user.create('Anton', {password = '12345', if_not_exists = true})
-box.schema.user.grant('admin', 'read,write,execute', 'universe', nil, {if_not_exists = true})
 
+local username = os.getenv("TARANTOOL_USER_NAME") or "default_user"
+local password = os.getenv("TARANTOOL_USER_PASSWORD") or "default_password"
 
--- Create a space --
-box.schema.space.create('bands')
-
--- Specify field names and types --
-box.space.bands:format({
-    { name = 'id', type = 'unsigned' },
-    { name = 'band_name', type = 'string' },
-    { name = 'year', type = 'unsigned' }
-})
-
--- Create indexes --
-box.space.bands:create_index('primary', { parts = { 'id' } })
-box.space.bands:create_index('band', { parts = { 'band_name' } })
-box.space.bands:create_index('year_band', { parts = { { 'year' }, { 'band_name' } } })
-
--- Create a stored function --
-box.schema.func.create('get_bands_older_than', {
-    body = [[
-    function(year)
-        return box.space.bands.index.year_band:select({ year }, { iterator = 'LT', limit = 10 })
-    end
-    ]]
-})
+box.schema.user.create(username, {password = password, if_not_exists = true})
+box.schema.user.grant(username, 'read,write,execute', 'universe', nil, {if_not_exists = true})

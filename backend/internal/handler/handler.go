@@ -17,10 +17,5 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 	
-	router.POST("/kv", h.create)
-	router.GET("/kv/:id", h.get)
-	router.PUT("/kv/:id", h.update)
-	router.DELETE("/kv/:id", h.delete)
-	
 	return router
 }

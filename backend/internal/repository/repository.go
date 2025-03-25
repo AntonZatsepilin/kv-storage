@@ -1,20 +1,16 @@
 package repository
 
-import "github.com/tarantool/go-tarantool"
+import "github.com/tarantool/go-tarantool/v2"
 
-type KVRepository interface {
-	Create(key string, value interface{}) error
-	Get(key string) (interface{}, error)
-	Update(key string, value interface{}) error
-	Delete(key string) error
+type KeyValueRepository interface {
 }
 
 type Repository struct {
-	KVRepository
+	KeyValueRepository
 }
 
-func NewRepository(conn *tarantool.Connection) *Repository {
+func NewRepository(db *tarantool.Connection) *Repository {
 	return &Repository{
-		KVRepository: NewKVTarantool(conn),
+		KeyValueRepository: NewKeyValueRepository(db),
 	}
 }
