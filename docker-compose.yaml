@@ -18,6 +18,9 @@ services:
   tarantool:
     container_name: kv-storage-db
     image: tarantool/tarantool:2.11.0
+    volumes:
+      - ./init.lua:/opt/tarantool/init.lua
+    command: tarantool /opt/tarantool/init.lua
     environment:
       TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
       TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
@@ -28,6 +31,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 5
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
