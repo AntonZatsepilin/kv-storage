@@ -6,9 +6,9 @@ COPY backend/go.mod backend/go.sum ./
 
 RUN go mod download
 
-COPY . ./
+COPY backend/ ./
 
-COPY ./backend .env
+COPY backend/.env .env
 
 RUN go build -o main ./cmd/server
 

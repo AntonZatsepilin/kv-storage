@@ -3,8 +3,8 @@ version: '3.8'
 services:
   go-app:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -16,4 +16,4 @@ services:
     ports:
       - "3301:3301"
     volumes:
-      - ./init.lua:/opt/tarantool/init.lua
+     - ./backend/init.lua:/opt/tarantool/init.lua
