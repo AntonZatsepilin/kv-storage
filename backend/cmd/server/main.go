@@ -36,10 +36,14 @@ func main() {
 	}
 
 	tarantoolCfg := repository.TarantoolConfig{
-		Addres:     viper.GetString("tarantool.address"),
-		User:     os.Getenv("TARANTOOL_USER_PASSWORD"),
-		Password: os.Getenv("TARANTOOL_USER_PASSWORD"),
-		Timeout: viper.GetInt("tarantool.timeout"),
+		// Addres:     viper.GetString("tarantool.address"),
+		// User:     os.Getenv("TARANTOOL_USER_PASSWORD"),
+		// Password: os.Getenv("TARANTOOL_USER_PASSWORD"),
+		// Timeout: viper.GetInt("tarantool.timeout"),
+		Addres:     "kv-storage-db:3301",
+		User:     "Anton",
+		Password: "12345",
+		Timeout: 20,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
