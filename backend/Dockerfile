@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY backend/ ./
 
-COPY backend/.env .env
+COPY .env .env
 
 RUN go build -o main ./cmd/server
 
