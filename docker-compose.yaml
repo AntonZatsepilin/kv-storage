@@ -8,6 +8,8 @@ services:
     ports:
       - "8080:8080"
     environment:
+      TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
+      TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
       TARANTOOL_HOST: tarantool
     depends_on:
       tarantool:
