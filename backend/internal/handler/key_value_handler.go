@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/AntonZatsepilin/kv-storage.git/internal/models"
@@ -18,13 +17,9 @@ func (h *Handler) setValue(c *gin.Context) {
     }
 
     if err := h.services.SetValue(input.Key, string(input.Value)); err != nil {
-        if err == repository.ErrKeyExists {
             newErrorResponse(c, http.StatusConflict, err.Error())
-        } else {
-            newErrorResponse(c, http.StatusInternalServerError, err.Error())
+            return
         }
-        return
-    }
 
     c.JSON(http.StatusOK, statusResponse{"value set successfully"})
 }
@@ -50,13 +45,8 @@ func (h *Handler) updateValue(c *gin.Context) {
 
 	var input models.KeyValue
 
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if !json.Valid(input.Value) {
-        newErrorResponse(c, http.StatusBadRequest, "value must be a valid JSON")
+    if err := c.BindJSON(&input); err != nil {
+        newErrorResponse(c, http.StatusBadRequest, "invalid JSON format")
         return
     }
 

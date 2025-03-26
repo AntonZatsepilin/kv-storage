@@ -19,7 +19,7 @@ func (s *KeyValueServiceImpl) GetValueByKey(key string) (string, error) {
 }
 
 func (s *KeyValueServiceImpl) UpdateValue(key, value string) error {
-	return s.repo.SetValue(key, value)
+	return s.repo.UpdateValue(key, value)
 }
 
 func (s *KeyValueServiceImpl) DeleteValue(key string) error {

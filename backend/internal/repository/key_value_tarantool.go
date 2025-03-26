@@ -24,10 +24,7 @@ func (r *KeyValueTarantool) SetValue(key, value string) error {
     _, err := r.db.Do(tarantool.NewInsertRequest("kv").Tuple([]interface{}{key, value}),).Get()
 
     if err != nil {
-        if tarantoolError, ok := err.(tarantool.ClientError); ok && tarantoolError.Code == 0x3 {
-            return ErrKeyExists
-        }
-        return err
+        return ErrKeyExists
     }
     
     return nil
