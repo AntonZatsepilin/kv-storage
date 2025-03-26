@@ -8,6 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SetValue godoc
+// @Summary Create a new key-value pair
+// @Description Create new key-value entry in storage
+// @Tags kv
+// @Accept  json
+// @Produce json
+// @Param input body models.KeyValue true "Key-Value data"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} errorResponse
+// @Failure 409 {object} errorResponse
+// @Router /kv [post]
 func (h *Handler) setValue(c *gin.Context) {
     var input models.KeyValue
 
@@ -24,6 +35,16 @@ func (h *Handler) setValue(c *gin.Context) {
     c.JSON(http.StatusOK, statusResponse{"value set successfully"})
 }
 
+// GetValueByKey godoc
+// @Summary Get value by key
+// @Description Get existing value by key
+// @Tags kv
+// @Produce json
+// @Param key path string true "Key"
+// @Success 200 {object} models.KeyValueResp
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /kv/{key} [get]
 func (h *Handler) getValueByKey(c *gin.Context) {
     key := c.Param("key")
 
@@ -40,6 +61,18 @@ func (h *Handler) getValueByKey(c *gin.Context) {
     c.JSON(http.StatusOK, models.KeyValueResp{Key: key, Value: value})
 }
 
+// UpdateValue godoc
+// @Summary Update existing value
+// @Description Update value for existing key
+// @Tags kv
+// @Accept  json
+// @Produce json
+// @Param key path string true "Key"
+// @Param input body models.KeyValueUpdateReq true "New value"
+// @Success 200 {object} statusResponse
+// @Failure 400 {object} errorResponse
+// @Failure 404 {object} errorResponse
+// @Router /kv/{key} [put]
 func (h *Handler) updateValue(c *gin.Context) {
 	key := c.Param("key")
 
@@ -58,6 +91,16 @@ func (h *Handler) updateValue(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{"value updated successfully"})
 }
 
+// DeleteValue godoc
+// @Summary Delete key-value pair
+// @Description Delete existing key-value entry
+// @Tags kv
+// @Produce json
+// @Param key path string true "Key"
+// @Success 200 {object} statusResponse
+// @Failure 404 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /kv/{key} [delete]
 func (h *Handler) deleteValue(c *gin.Context) {
     key := c.Param("key")
 

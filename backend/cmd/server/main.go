@@ -15,8 +15,16 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/tarantool/go-tarantool/v2"
+
+	_ "github.com/AntonZatsepilin/kv-storage.git/docs"
 )
 
+// @title KV Storage API
+// @version 1.0
+// @description Simple Key-Value storage service with Tarantool backend
+
+// @host localhost:8080
+// @BasePath /api
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 

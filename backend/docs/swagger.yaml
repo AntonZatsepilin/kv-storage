@@ -1,0 +1,163 @@
+basePath: /api
+definitions:
+  handler.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.statusResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  models.KeyValue:
+    properties:
+      key:
+        example: my_key
+        type: string
+      value:
+        example: '{"data":"value"}'
+        type: string
+    required:
+    - key
+    type: object
+  models.KeyValueResp:
+    properties:
+      key:
+        example: my_key
+        type: string
+      value:
+        example: '{"data":"value"}'
+        type: string
+    type: object
+  models.KeyValueUpdateReq:
+    properties:
+      value:
+        example: new_value
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Simple Key-Value storage service with Tarantool backend
+  title: KV Storage API
+  version: "1.0"
+paths:
+  /kv:
+    post:
+      consumes:
+      - application/json
+      description: Create new key-value entry in storage
+      parameters:
+      - description: Key-Value data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.KeyValue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Create a new key-value pair
+      tags:
+      - kv
+  /kv/{key}:
+    delete:
+      description: Delete existing key-value entry
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Delete key-value pair
+      tags:
+      - kv
+    get:
+      description: Get existing value by key
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.KeyValueResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Get value by key
+      tags:
+      - kv
+    put:
+      consumes:
+      - application/json
+      description: Update value for existing key
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      - description: New value
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.KeyValueUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.statusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Update existing value
+      tags:
+      - kv
+swagger: "2.0"
