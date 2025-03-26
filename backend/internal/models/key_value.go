@@ -11,3 +11,7 @@ type KeyValueResp struct {
 	Key   string `json:"key" binding:"required"`
 	Value string `json:"value"`
 }
+
+type KeyValueUpdateReq struct {
+	Value string `json:"value"`
+}

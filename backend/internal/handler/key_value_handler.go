@@ -43,7 +43,7 @@ func (h *Handler) getValueByKey(c *gin.Context) {
 func (h *Handler) updateValue(c *gin.Context) {
 	key := c.Param("key")
 
-	var input models.KeyValue
+	var input models.KeyValueUpdateReq
 
     if err := c.BindJSON(&input); err != nil {
         newErrorResponse(c, http.StatusBadRequest, "invalid JSON format")
@@ -51,7 +51,7 @@ func (h *Handler) updateValue(c *gin.Context) {
     }
 
 	if err := h.services.UpdateValue(key, string(input.Value)); err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusConflict, err.Error())
 		return
 	}
 

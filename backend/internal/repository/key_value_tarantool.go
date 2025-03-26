@@ -49,14 +49,21 @@ func (r *KeyValueTarantool) GetValueByKey(key string) (string, error) {
     if !ok {
         return "", ErrInvalidData
     }
-    
+
     return value, nil
 }
 
 func (r *KeyValueTarantool) UpdateValue(key, value string) error {
-	_, err := r.db.Do(tarantool.NewUpdateRequest("kv").Key([]interface{}{key}).Operations(tarantool.NewOperations().Assign(1, value),),).Get()
+	resp, err := r.db.Do(tarantool.NewUpdateRequest("kv").Key([]interface{}{key}).Operations(tarantool.NewOperations().Assign(1, value),),).Get()
+    if err != nil {
+        return err
+    }
 
-    return err
+    if len(resp) == 0 {
+        return ErrKeyNotFound
+    }
+    
+    return nil
 }
 
 func (r *KeyValueTarantool) DeleteValue(key string) error {
