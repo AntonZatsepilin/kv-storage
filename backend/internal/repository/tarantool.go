@@ -9,7 +9,8 @@ import (
 )
 
 type TarantoolConfig struct {
-    Addres string
+    Host string
+    Port string
     User string
     Password string
     Timeout int
@@ -19,7 +20,7 @@ func NewTarantoolDB(ctx context.Context, cfg TarantoolConfig) (*tarantool.Connec
     logrus.Info("Starting Tarantool connection...")
 
     dialer := tarantool.NetDialer{
-        Address:  cfg.Addres,
+        Address:  cfg.Host + ":" + cfg.Port,
         User:     cfg.User,  
         Password: cfg.Password,
     }
