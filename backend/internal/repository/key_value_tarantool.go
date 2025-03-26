@@ -37,18 +37,19 @@ func (r *KeyValueTarantool) GetValueByKey(key string) (string, error) {
     }
 	
     if len(resp) == 0 {
-        return "", nil
+        return "", ErrKeyNotFound
     }
 
     tuple, ok := resp[0].([]interface{})
     if !ok || len(tuple) < 2 {
-        return "", nil
+        return "", ErrInvalidData
     }
 	
     value, ok := tuple[1].(string)
     if !ok {
-        return "", nil
+        return "", ErrInvalidData
     }
+    
     return value, nil
 }
 
