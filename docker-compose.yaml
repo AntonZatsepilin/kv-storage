@@ -24,7 +24,7 @@ services:
       - ./init.lua:/opt/tarantool/init.lua
     command: tarantool /opt/tarantool/init.lua
     environment:
-      TARANTOOL_USER_NAME: ${TARANTOOL_USER_PASSWORD}
+      TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
       TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
     ports:
       - 3301:3301
