@@ -22,6 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		api.POST("/kv", h.setValue)
 		api.GET("/kv/:key", h.getValueByKey)
 		api.PUT("/kv/:key", h.updateValue)
+		api.DELETE("/kv/:key", h.deleteValue)
 	}
 	return router
 }
