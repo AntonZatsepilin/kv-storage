@@ -36,7 +36,7 @@ func main() {
 	}
 
 	tarantoolCfg := repository.TarantoolConfig{
-		Addres:     os.Getenv("TARANTOOL_ADDRES"),
+		Addres:     "kv-storage-db:3301",
 		User:     os.Getenv("TARANTOOL_USER_NAME"),
 		Password: os.Getenv("TARANTOOL_USER_PASSWORD"),
 		Timeout: viper.GetInt("tarantool.timeout"),
