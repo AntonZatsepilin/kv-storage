@@ -11,6 +11,7 @@ import (
 	"github.com/AntonZatsepilin/kv-storage.git/internal/models"
 	"github.com/AntonZatsepilin/kv-storage.git/internal/repository"
 	"github.com/AntonZatsepilin/kv-storage.git/internal/service"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/tarantool/go-tarantool/v2"
@@ -27,9 +28,9 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	// if err := godotenv.Load(".env"); err != nil {
-	// 	logrus.Fatalf("error loading env variables: %s", err.Error())
-	// }
+	if err := godotenv.Load(".env"); err != nil {
+		logrus.Fatalf("error loading env variables: %s", err.Error())
+	}
 
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializing config: %s", err.Error())
@@ -37,8 +38,8 @@ func main() {
 
 	tarantoolCfg := repository.TarantoolConfig{
 		Addres:     viper.GetString("tarantool.address"),
-		User:     os.Getenv("shared.TARANTOOL_USER_PASSWORD"),
-		Password: os.Getenv("shared.TARANTOOL_USER_PASSWORD"),
+		User:     os.Getenv("TARANTOOL_USER_PASSWORD"),
+		Password: os.Getenv("TARANTOOL_USER_PASSWORD"),
 		Timeout: viper.GetInt("tarantool.timeout"),
 	}
 
