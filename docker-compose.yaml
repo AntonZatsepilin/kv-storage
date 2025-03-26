@@ -11,6 +11,7 @@ services:
       TARANTOOL_HOST: kv-storage-db
       TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
       TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
+      TARANTOOL_ADDRES: ${TARANTOOL_ADDRES}
     depends_on:
       tarantool:
         condition: service_healthy
@@ -26,6 +27,7 @@ services:
     environment:
       TARANTOOL_USER_NAME: ${TARANTOOL_USER_NAME}
       TARANTOOL_USER_PASSWORD: ${TARANTOOL_USER_PASSWORD}
+      TARANTOOL_ADDRES: ${TARANTOOL_ADDRES}
     ports:
       - 3301:3301
     healthcheck:
